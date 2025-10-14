@@ -1,0 +1,194 @@
+# TN-NTN Multi-Connectivity Simulator Configuration
+# Public Release Version
+
+# =============================================================================
+# SIMULATION PARAMETERS
+# =============================================================================
+simulation:
+  duration_seconds: 3600           # Total simulation time
+  time_step: 5.0                   # Satellite position update interval
+
+# =============================================================================
+# UE (USER EQUIPMENT) CONFIGURATION
+# =============================================================================
+ue:
+  location: [48.8566, 2.3522, 0]   # [lat, lon, alt] - Paris, France
+  max_tx_power_dbm: 23.0           # Maximum UE transmit power (3GPP Class 3)
+  antenna_gain_dbi: 0.0            # UE antenna gain
+  circuit_power_mw: 150.0          # Circuit power consumption
+  rx_power_mw: 50.0                # Reception power consumption
+
+# =============================================================================
+# PHYSICAL CONSTANTS
+# =============================================================================
+constants:
+  speed_of_light: 299792458        # Speed of light in m/s
+  earth_radius_km: 6371            # Earth radius in km
+
+# =============================================================================
+# CHANNEL CONFIGURATION
+# =============================================================================
+channel:
+  noise_figure_db: 7.0             # Receiver noise figure
+  thermal_noise_density_dbm_hz: -174.0  # Thermal noise density
+  target_snr_db:
+    ul_data: 10.0                  # Uplink data SNR target
+    dl_data: 15.0                  # Downlink data SNR target
+
+# =============================================================================
+# TERRESTRIAL NETWORK CONFIGURATION
+# 3GPP Band n78 (3.5 GHz) - Primary 5G NR band
+# =============================================================================
+terrestrial:
+  frequency_ghz: 3.5               # Operating frequency
+  bandwidth_mhz: 20                # Channel bandwidth
+  tx_power_dbm: 30.0               # Base station transmit power
+  antenna_gain_dbi: 18.0           # Base station antenna gain
+  shadowing_std_db: 8.0            # Log-normal shadowing standard deviation
+  processing_delay_ms: 2.0         # Base station processing delay
+  base_stations:
+    - [48.8656, 2.3522, 30]        # [lat, lon, alt] - Base station location
+
+# =============================================================================
+# UAV CONFIGURATION
+# 3GPP Band 1 (2.1 GHz) - Air-to-ground communications
+# =============================================================================
+uav:
+  frequency_ghz: 2.1               # Operating frequency
+  bandwidth_mhz: 20                # Channel bandwidth
+  tx_power_dbm: 20.0               # UAV transmit power
+  antenna_gain_dbi: 10.0           # UAV antenna gain
+  shadowing_std_db: 4.0            # Log-normal shadowing
+  los_excess_loss_db: 1.0          # Line-of-sight excess loss
+  nlos_excess_loss_db: 20.0        # Non-line-of-sight excess loss
+  processing_delay_ms: 1.5         # UAV processing delay
+  environment_params:
+    suburban:
+      a_env: 9.6                   # LoS probability parameter
+      b_env: 0.28                  # LoS probability parameter
+    urban:
+      a_env: 11.0
+      b_env: 0.14
+  positions:
+    - [48.8566, 2.3522, 300]       # [lat, lon, alt] - UAV position
+
+# =============================================================================
+# HAPS CONFIGURATION
+# IMT bands (2.1 GHz) for stratospheric platforms
+# =============================================================================
+haps:
+  frequency_ghz: 2.1               # Operating frequency
+  bandwidth_mhz: 20                # Channel bandwidth
+  tx_power_dbm: 35.0               # HAPS transmit power
+  antenna_gain_dbi: 25.0           # HAPS antenna gain
+  shadowing_std_db: 2.0            # Log-normal shadowing
+  clutter_loss_los_db: 0.5         # Line-of-sight clutter loss
+  clutter_loss_nlos_db: 5.0        # Non-line-of-sight clutter loss
+  processing_delay_ms: 0.8         # HAPS processing delay
+  positions:
+    - [48.8566, 2.3522, 20000]     # [lat, lon, alt] - HAPS position (20km altitude)
+  environment_params:
+    a_env: 4.88                    # Environment parameter for LoS probability
+    b_env: 0.43                    # Environment parameter for elevation-dependent LoS
+
+# =============================================================================
+# SATELLITE CONFIGURATION
+# S-band MSS (1.995 GHz) - LEO satellite communications
+# =============================================================================
+satellite:
+  frequency_ghz: 1.995             # Operating frequency (S-band)
+  bandwidth_mhz: 20                # Channel bandwidth
+  tx_power_dbm: 40.0               # Satellite transmit power
+  gt_ratio_db_k: 4.0               # G/T ratio for satellite antenna
+  shadowing_std_db: 1.0            # Log-normal shadowing
+  atmospheric_loss_db: 0.5         # Atmospheric loss
+  altitude_km: 550                 # LEO orbit altitude
+  constellation_type: "starlink"   # Constellation type
+  processing_delay_ms: 5.0         # Satellite processing delay
+  
+  # Starlink constellation parameters
+  starlink:
+    num_planes: 72                 # Number of orbital planes
+    sats_per_plane: 22             # Satellites per plane
+    inclination_deg: 53.0          # Orbital inclination
+
+# =============================================================================
+# 5G NR (NEW RADIO) CONFIGURATION
+# Transport Block level parameters
+# =============================================================================
+5g_nr:
+  numerology_index: 1              # μ=1 → slot duration = 0.5ms (30 kHz subcarrier spacing)
+  slot_duration_ms: 0.5            # Slot duration
+  
+  # Resource allocation
+  nrb_ul: 50                       # Scheduled physical resource blocks for uplink
+  nrb_dl: 50                       # Scheduled physical resource blocks for downlink
+  nsym_data_ul: 12                 # Data OFDM symbols per slot uplink
+  nsym_data_dl: 11                 # Data OFDM symbols per slot downlink
+  
+  # Modulation and coding scheme
+  mcs_ul: 10                       # Default uplink MCS (16QAM)
+  mcs_dl: 15                       # Default downlink MCS (16QAM)
+
+# =============================================================================
+# APPLICATION CONFIGURATION
+# Medium application type (representative example)
+# =============================================================================
+applications:
+  medium:
+    ul_data_rate_kbps: 2048        # Uplink data rate
+    dl_data_rate_kbps: 10240       # Downlink data rate
+    duty_cycle_ul: 0.10            # Uplink duty cycle (10%)
+    duty_cycle_dl: 0.25            # Downlink duty cycle (25%)
+
+# Application semantics
+applications_semantics:
+  rates_are_instantaneous_during_on: true  # Data rates are instantaneous during ON periods
+
+# =============================================================================
+# HARQ CONFIGURATION
+# Hybrid Automatic Repeat Request parameters
+# =============================================================================
+harq:
+  max_retransmissions: 4           # Maximum retransmission attempts
+  bler_target: 0.0001              # Target block error rate
+
+# =============================================================================
+# DUDE HARQ CONFIGURATION
+# Downlink-uplink decoupled HARQ parameters
+# =============================================================================
+dude_harq:
+  # ACK/NACK processing
+  ack_nack_processing_time_ms: 1.2      # UE processing time for ACK/NACK
+  harq_feedback_preparation_time_ms: 0.8 # Feedback preparation time
+  ack_nack_message_bits: 8              # Base ACK/NACK message size
+  feedback_bits_per_tb: 2               # Additional feedback bits per bundled TB
+  transmission_overhead_factor: 1.2     # Transmission overhead factor
+
+# =============================================================================
+# BLER MODEL CONFIGURATION
+# Block error rate model parameters
+# =============================================================================
+bler_model:
+  terrestrial:
+    a: 1.0                         # Logistic model parameter
+    snr_0: 5.0                     # SNR threshold
+  uav:
+    a: 1.3
+    snr_0: 6.0
+  haps:
+    a: 1.2
+    snr_0: 7.0
+  satellite:
+    a: 1.0
+    snr_0: 10.0
+
+# =============================================================================
+# HANDOVER CONFIGURATION
+# Satellite handover parameters
+# =============================================================================
+handover:
+  elevation_threshold_deg: 20.0    # Minimum elevation for satellite connection
+  min_visibility_threshold_deg: 5.0 # Minimum visibility threshold
+  metrics:
+    - "elevation_angle"            # Primary handover metric
