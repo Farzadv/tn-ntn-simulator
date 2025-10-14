@@ -25,27 +25,23 @@ Simulator for energy-efficient uplink-downlink decoupling in 6G TN-NTN networks.
 - LEO constellation simulation (Starlink/Kuiper)
 - 5G NR transport block calculations
 
-## Installation
+## Requirements
 
-```bash
-pip install -r requirements.txt
-```
-
-**Requirements:** Python 3.8+, NumPy, Pandas, Matplotlib, PyYAML, SciPy, Seaborn
+Python 3.8+, NumPy, Pandas, Matplotlib, PyYAML, SciPy, Seaborn
 
 ## Quick Start
 
 ```bash
-# 1. Basic power analysis (100 MC iterations)
+# 1. Basic power analysis 
 python basic_power_analyzer.py
 
-# 2. HARQ BLER analysis (30 MC iterations)
+# 2. HARQ BLER analysis 
 python bler_harq_analyzer.py
 
-# 3. Activity factor analysis (100 MC samples per point)
+# 3. Activity factor analysis
 python dc_harq_analyzer.py
 
-# 4. Bundling delay analysis (100 MC RTT samples)
+# 4. Bundling delay analysis 
 python bundle_delay_analyzer.py
 ```
 
@@ -54,20 +50,52 @@ python bundle_delay_analyzer.py
 Edit `config/parameters.yaml`:
 
 ```yaml
-# UE location (Paris example)
+# =============================================================================
+# UE (USER EQUIPMENT) CONFIGURATION
+# =============================================================================
 ue:
-  location: [48.8566, 2.3522, 0]  # [lat, lon, alt_m]
-  max_tx_power_dbm: 23.0          # Class 3 handheld
+  location: [48.8566, 2.3522, 0]   # [lat, lon, alt] - Paris, France
+  max_tx_power_dbm: 23.0           # Maximum UE transmit power (3GPP Class 3)
+  antenna_gain_dbi: 0.0            # UE antenna gain
+  circuit_power_mw: 150.0          # Circuit power consumption
+  rx_power_mw: 50.0                # Reception power consumption
 
-# LEO constellation
-satellite:
-  constellation_type: "starlink"  # 72 planes × 22 sats @ 550km
-  
-# 5G NR parameters
-5g_nr:
-  numerology_index: 1             # μ=1 → 0.5ms slots
-  mcs_ul: 10                      # 16QAM R=340/1024
-  mcs_dl: 15                      # 16QAM R=616/1024
+# =============================================================================
+# PHYSICAL CONSTANTS
+# =============================================================================
+constants:
+  speed_of_light: 299792458        # Speed of light in m/s
+  earth_radius_km: 6371            # Earth radius in km
+
+# =============================================================================
+# CHANNEL CONFIGURATION
+# =============================================================================
+channel:
+  noise_figure_db: 7.0             # Receiver noise figure
+  thermal_noise_density_dbm_hz: -174.0  # Thermal noise density
+  target_snr_db:
+    ul_data: 10.0                  # Uplink data SNR target
+    dl_data: 15.0                  # Downlink data SNR target
+
+# =============================================================================
+# TERRESTRIAL NETWORK CONFIGURATION
+# 3GPP Band n78 (3.5 GHz) - Primary 5G NR band
+# =============================================================================
+terrestrial:
+  frequency_ghz: 3.5               # Operating frequency
+  bandwidth_mhz: 20                # Channel bandwidth
+  tx_power_dbm: 30.0               # Base station transmit power
+  antenna_gain_dbi: 18.0           # Base station antenna gain
+  shadowing_std_db: 8.0            # Log-normal shadowing standard deviation
+  processing_delay_ms: 2.0         # Base station processing delay
+  base_stations:
+    - [48.8656, 2.3522, 30]        # [lat, lon, alt] - Base station location
+
+# =============================================================================
+# UAV CONFIGURATION
+# 3GPP Band 1 (2.1 GHz) - Air-to-ground communications
+# =============================================================================
+...
 ```
 
 ## Usage
@@ -196,10 +224,6 @@ simulator/
 - Handover: 20° elevation threshold
 - Auto-update: Background thread for satellite motion
 
-**Power model:**
-- Energy/TB = (P_circuit + P_TX) × T_slot
-- P_TX from link budget: P_RX_required + PathLoss - AntennaGains
-- Circuit power: 150 mW (UL), 50 mW (DL)
 
 ## Results
 
