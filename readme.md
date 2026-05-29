@@ -249,6 +249,23 @@ Power reduction: 35% vs Independent
 Delay overhead:  5.8% of RTT (median)
 ```
 
+## Citation
+
+If you use this work in your research, please cite:
+
+```bibtex
+@inproceedings{veisi2026dude,
+  title     = {Energy-Efficient Uplink-Downlink Decoupling for 6G TN-NTN Multi-Connectivity},
+  author    = {Veisi Goshtasb, Farzad and Braconnot Velloso, Pedro and Mafakheri, Babak and Secci, Stefano},
+  booktitle = {IEEE International Conference on Communications (ICC)},
+  address   = {Glasgow, United Kingdom},
+  organization = {IEEE},
+  year      = {2026},
+  month     = may,
+  url       = {https://hal.science/hal-05474092},
+  pdf       = {https://hal.science/hal-05474092v1/file/NTN_TN_DUDE_ICC_Submitted_version%20%281%29.pdf}
+}
+
 ## License
 
 MIT License
